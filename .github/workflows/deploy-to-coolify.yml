@@ -1,0 +1,17 @@
+name: Deploy to Coolify
+
+on:
+  push:
+    branches:
+      - coolify  # Make sure this matches your deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Coolify Deployment
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+               -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
+               -d '{"action":"deploy"}' \
+               "http://188.245.253.95:8000/api/v1/deploy?uuid=j4g4kssookw88so8wc8o080k&force=false"
