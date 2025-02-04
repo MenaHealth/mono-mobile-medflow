@@ -3,8 +3,9 @@
   "private": true,
   "packageManager": "npm@10.8.2",
   "scripts": {
-    "build": "dotenv -e apps/web/.env -- turbo run build --filter=web",
-    "dev": "dotenv -e apps/web/.env -- turbo run dev",
+    "build": "dotenv -e .env.local -- turbo run build --filter=web",
+    "predev": "cp .env.local apps/web/.env.local && cp .env.local apps/mobile/.env.local",
+    "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
