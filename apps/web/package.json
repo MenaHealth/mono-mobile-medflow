@@ -100,7 +100,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
     "@shadcn/ui": "^0.0.4",
     "@types/bcryptjs": "^2.4.6",
     "@types/crypto-js": "^4.2.2",
