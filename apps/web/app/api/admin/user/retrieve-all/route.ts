@@ -1,5 +1,6 @@
 // apps/web/app/api/admin/user/retrieve-all/route.ts
 
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/user";
 import { verifyAdminToken, initializeDatabase } from "@/utils/adminAPI";

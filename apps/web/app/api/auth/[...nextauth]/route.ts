@@ -1,5 +1,7 @@
 // apps/web/app/api/auth/[...nextauth]/route.ts
 
+export const dynamic = 'force-dynamic';
+
 import NextAuth, { NextAuthOptions, User as NextAuthUser } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';

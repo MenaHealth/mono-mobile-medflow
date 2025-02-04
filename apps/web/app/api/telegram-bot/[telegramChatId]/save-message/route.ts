@@ -1,5 +1,7 @@
 // apps/web/app/api/telegram-bot/[telegramChatId]/save-message/route.ts
 
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/database";
 import TelegramThread from "@/models/telegramThread";

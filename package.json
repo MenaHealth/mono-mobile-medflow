@@ -3,15 +3,16 @@
   "private": true,
   "packageManager": "npm@10.8.2",
   "scripts": {
-    "build": "turbo run build --filter=web",
-    "dev": "turbo run dev",
+    "build": "dotenv -e apps/web/.env -- turbo run build --filter=web",
+    "dev": "dotenv -e apps/web/.env -- turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "dotenv-cli": "^8.0.0",
+    "prettier": "^3.4.2",
     "turbo": "^2.4.0",
-    "typescript": "5.7.3",
-    "prettier": "^3.4.2"
+    "typescript": "5.7.3"
   },
   "workspaces": [
     "apps/*",
