@@ -14,8 +14,8 @@ COPY packages ./packages
 # Change to the web app folder
 WORKDIR /app/apps/web
 
-# (Optional) Copy the environment file if needed
-COPY .env ./
+# (Optional) If you don't need the .env file, comment this out:
+# COPY .env ./
 
 # Install dependencies with workspace awareness
 RUN npm install
@@ -32,7 +32,8 @@ WORKDIR /app
 COPY --from=builder /app/apps/web/.next ./.next
 COPY --from=builder /app/apps/web/public ./public
 COPY --from=builder /app/apps/web/package*.json ./
-COPY --from=builder /app/apps/web/.env ./
+# If you removed the .env copy above, remove this line too:
+# COPY --from=builder /app/apps/web/.env ./
 
 # Install only production dependencies
 RUN npm install --only=production
