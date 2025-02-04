@@ -1,12 +1,17 @@
 {
   "name": "mono-mobile-medflow",
   "private": true,
+  "packageManager": "npm@10.8.2",
   "scripts": {
-    "build": "turbo build --filter=web",
-    "dev": "turbo dev --filter=web",
-    "start": "turbo run start --filter=web",
-    "lint": "turbo lint",
+    "build": "turbo run build --filter=web",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "5.7.3",
+    "prettier": "^3.4.2"
   },
   "workspaces": [
     "apps/*",
