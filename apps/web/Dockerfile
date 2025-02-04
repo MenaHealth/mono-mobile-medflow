@@ -45,7 +45,7 @@ COPY --from=builder /app/.env ./
 RUN npm install --only=production
 
 # Expose the port that Next.js listens on (default is 3000)
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the Next.js app
 CMD ["npm", "start"]

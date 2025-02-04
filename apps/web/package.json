@@ -10,10 +10,6 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "*",
-    "next": "^14.2.17",
-    "react": "^18",
-    "react-dom": "^18",
     "@appbuilder/react": "file:./lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz",
     "@aws-sdk/client-s3": "^3.705.0",
     "@aws-sdk/lib-storage": "^3.600.0",
@@ -41,6 +37,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
     "@react-oauth/google": "^0.12.1",
+    "@repo/ui": "*",
     "@sendgrid/mail": "^8.1.4",
     "@tanstack/react-table": "^8.20.5",
     "@types/jsonwebtoken": "^9.0.7",
@@ -55,6 +52,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "eslint-config": "^0.3.0",
     "express-rate-limit": "^7.5.0",
     "framer-motion": "^11.15.0",
     "googleapis": "^144.0.0",
@@ -71,6 +69,7 @@
     "mongoose": "^7.1.0",
     "mui": "^0.0.1",
     "multer": "^1.4.5-lts.1",
+    "next": "^14.2.17",
     "next-auth": "^4.24.8",
     "next-connect": "^1.0.0",
     "node-fetch": "^3.3.2",
@@ -79,7 +78,9 @@
     "ogg-parser": "^0.3.1",
     "opus-recorder": "^8.0.5",
     "qrcode": "^1.5.4",
+    "react": "^18",
     "react-day-picker": "^8.10.0",
+    "react-dom": "^18",
     "react-hook-form": "^7.51.1",
     "react-icons": "^5.2.1",
     "react-markdown": "^9.0.1",
@@ -101,15 +102,14 @@
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
-    "@types/node": "^22",
-    "@types/react": "19.0.8",
-    "@types/react-dom": "19.0.3",
-    "typescript": "5.7.3",
     "@shadcn/ui": "^0.0.4",
     "@types/bcryptjs": "^2.4.6",
     "@types/crypto-js": "^4.2.2",
     "@types/multer": "^1.4.11",
+    "@types/node": "^22",
     "@types/node-telegram-bot-api": "^0.64.7",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
     "@types/react-modal": "^3.16.3",
     "@types/simple-oauth2": "^5.0.7",
     "@types/uuid": "^10.0.0",
@@ -117,7 +117,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0"
+    "tailwindcss": "^3.3.0",
+    "typescript": "5.7.3"
   }
 }
-
