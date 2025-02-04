@@ -1,50 +1,44 @@
 # apps/web/Dockerfile
 
-# ------------- Stage 1: Build the Next.js App -------------
+# ----- Stage 1: Build the Next.js App -----
 FROM node:18-bullseye AS builder
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json (and package-lock.json if available) first.
-# This allows Docker to cache dependency installation.
-COPY package*.json ./
+# Copy the package files and the lib directory first
+COPY package.json package-lock.json ./
+COPY lib ./lib
 
-# (Optional) If your build needs env vars, copy your env file.
-# If you want to use a production-specific env file, adjust accordingly.
-COPY .env ./
-
-# Copy the rest of the application code.
-COPY . .
-
-# Install dependencies
+# Install all dependencies
 RUN npm install
+
+# Copy the rest of the application code
+COPY . .
 
 # Build the Next.js app
 RUN npm run build
 
 
-# ------------- Stage 2: Run the Next.js App -------------
+# ----- Stage 2: Run the Next.js App -----
 FROM node:18-alpine
 
-# Set the runtime environment variable
+# Set production environment variable
 ENV NODE_ENV=production
 
 # Set working directory
 WORKDIR /app
 
-# Copy the built Next.js output and necessary files from the builder stage.
+# Copy built artifacts and necessary files from the builder stage
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/lib ./lib
-COPY --from=builder /app/package*.json ./
-# If your runtime code relies on the env file, copy it too.
-COPY --from=builder /app/.env ./
 
 # Install only production dependencies
 RUN npm install --only=production
 
-# Expose the port that Next.js listens on (default is 3000)
+# Expose the port (set here to 3001)
 EXPOSE 3001
 
 # Start the Next.js app
