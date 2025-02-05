@@ -34,7 +34,7 @@ ENV NEXTAUTH_URL=$NEXTAUTH_URL
 RUN pnpm install --frozen-lockfile
 
 # Build the Next.js app
-RUN pnpm exec turbo run build --filter=web
+RUN pnpm exec turbo run build2
 
 # ----- Stage 2: Run the Next.js App -----
 FROM node:18-alpine
