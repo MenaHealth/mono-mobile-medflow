@@ -19,7 +19,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Manually run pnpm setup to fix bin path issue
 RUN pnpm setup
 
-# Install Turbo globally (replace `<your-major-version>` with your Turbo version)
+# Install Turbo globally
 RUN pnpm add -g turbo@2.4.0
 
 # Copy all monorepo files
