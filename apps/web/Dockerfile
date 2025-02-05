@@ -3,7 +3,7 @@
 # ----- Stage 1: Build the Next.js App -----
 FROM node:18-bullseye AS builder
 
-# Install pnpm manually instead of relying on Corepack
+# Install pnpm manually
 RUN npm install -g pnpm@8.15.4
 
 # Set working directory
@@ -20,6 +20,16 @@ COPY turbo.json pnpm-workspace.yaml ./
 # Ensure the `lib/` folder inside `apps/web/` is copied
 COPY apps/web/lib ./apps/web/lib
 
+# 🔥 Inject environment variables at build time 🔥
+ARG MONGODB_URI
+ARG NEXTAUTH_SECRET
+ARG NEXT_PUBLIC_API_URL
+ARG NEXTAUTH_URL
+ENV MONGODB_URI=$MONGODB_URI
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+
 # Install dependencies using pnpm
 RUN pnpm install --frozen-lockfile
 
@@ -29,10 +39,10 @@ RUN pnpm exec turbo run build --filter=web
 # ----- Stage 2: Run the Next.js App -----
 FROM node:18-alpine
 
-# Install pnpm manually instead of relying on Corepack
+# Install pnpm manually
 RUN npm install -g pnpm@8.15.4
 
-# Set production environment variable
+# Set runtime environment variable
 ENV NODE_ENV=production
 
 # Set working directory
@@ -44,10 +54,10 @@ COPY --from=builder /app/apps/web/package.json ./
 COPY --from=builder /app/apps/web/public ./public
 COPY --from=builder /app/apps/web/lib ./apps/web/lib
 
-# Install only production dependencies using pnpm
+# Install only production dependencies
 RUN pnpm install --prod --frozen-lockfile
 
-# Expose the port (set here to 3001)
+# Expose the port
 EXPOSE 3001
 
 # Start the Next.js app
