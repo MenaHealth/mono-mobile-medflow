@@ -78,9 +78,9 @@ RUN ls -lah apps/web
 
 # Build the project (from the monorepo root)
 RUN pnpm run build --filter=web
+RUN ls -lah apps/web/.next || echo "❌ .next directory is missing"
+RUN ls -lah apps/web/.next/standalone || echo "❌ .next/standalone directory is missing"
 
-# Debug: Check if .next/standalone exists after build
-RUN ls -lah apps/web/.next
 
 # Stage 4: Run the application
 FROM base AS runner
