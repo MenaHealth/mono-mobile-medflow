@@ -16,45 +16,46 @@ COPY . .
 # Prune the workspace for the web app
 RUN turbo prune web --docker
 
-## Stage 3: Build the application
- #FROM base AS installer
- #COPY --from=builder /app/out/json/ .
- #COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
- #COPY --from=builder /app/apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
- #RUN npm install -g pnpm@8.15.4
- #
- ## Install dependencies
- #RUN pnpm install --frozen-lockfile
- #
- ## Copy source code
- #COPY --from=builder /app/out/full/ .
- #COPY --from=builder /app/apps/web ./apps/web
- #COPY turbo.json .
- #
- ## Create a temporary .env.local file for Next.js to pick up during the build.
- #RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
- #    && echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> apps/web/.env.local \
- #    && echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" >> apps/web/.env.local \
- #    && echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> apps/web/.env.local \
- #    && echo "DO_SPACES_CDN_ENDPOINT=${DO_SPACES_CDN_ENDPOINT}" >> apps/web/.env.local \
- #    && echo "DO_SPACES_BUCKET=${DO_SPACES_BUCKET}" >> apps/web/.env.local \
- #    && echo "DO_SPACES_ENDPOINT=${DO_SPACES_ENDPOINT}" >> apps/web/.env.local \
- #    && echo "DO_SPACES_KEY=${DO_SPACES_KEY}" >> apps/web/.env.local \
- #    && echo "DO_SPACES_REGION=${DO_SPACES_REGION}" >> apps/web/.env.local \
- #    && echo "DO_SPACES_SECRET=${DO_SPACES_SECRET}" >> apps/web/.env.local \
- #    && echo "GMAIL_SENDER_EMAIL=${GMAIL_SENDER_EMAIL}" >> apps/web/.env.local \
- #    && echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> apps/web/.env.local \
- #    && echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> apps/web/.env.local \
- #    && echo "JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}" >> apps/web/.env.local \
- #    && echo "JWT_SECRET=${JWT_SECRET}" >> apps/web/.env.local \
- #    && echo "MEDFLOW_KEY=${MEDFLOW_KEY}" >> apps/web/.env.local \
- #    && echo "MEDFLOW_SENDGRID_KEY=${MEDFLOW_SENDGRID_KEY}" >> apps/web/.env.local \
- #    && echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}" >> apps/web/.env.local \
- #    && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
- #    && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
- #
- ## Build the project
- #RUN pnpm run build --filter=web
+# Stage 3: Build the application
+FROM base AS installer
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
+RUN npm install -g pnpm@8.15.4
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY --from=builder /app/out/full/ .
+COPY --from=builder /app/apps/web ./apps/web
+COPY turbo.json .
+
+# Create a temporary .env.local file for Next.js to pick up during the build.
+RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
+    && echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> apps/web/.env.local \
+    && echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" >> apps/web/.env.local \
+    && echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> apps/web/.env.local \
+    && echo "DO_SPACES_CDN_ENDPOINT=${DO_SPACES_CDN_ENDPOINT}" >> apps/web/.env.local \
+    && echo "DO_SPACES_BUCKET=${DO_SPACES_BUCKET}" >> apps/web/.env.local \
+    && echo "DO_SPACES_ENDPOINT=${DO_SPACES_ENDPOINT}" >> apps/web/.env.local \
+    && echo "DO_SPACES_KEY=${DO_SPACES_KEY}" >> apps/web/.env.local \
+    && echo "DO_SPACES_REGION=${DO_SPACES_REGION}" >> apps/web/.env.local \
+    && echo "DO_SPACES_SECRET=${DO_SPACES_SECRET}" >> apps/web/.env.local \
+    && echo "GMAIL_SENDER_EMAIL=${GMAIL_SENDER_EMAIL}" >> apps/web/.env.local \
+    && echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> apps/web/.env.local \
+    && echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> apps/web/.env.local \
+    && echo "JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}" >> apps/web/.env.local \
+    && echo "JWT_SECRET=${JWT_SECRET}" >> apps/web/.env.local \
+    && echo "MEDFLOW_KEY=${MEDFLOW_KEY}" >> apps/web/.env.local \
+    && echo "MEDFLOW_SENDGRID_KEY=${MEDFLOW_SENDGRID_KEY}" >> apps/web/.env.local \
+    && echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}" >> apps/web/.env.local \
+    && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
+    && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
+
+# Build the project
+RUN pnpm run build --filter=web
+
 # Stage 4: Run the application
 FROM base AS runner
 WORKDIR /app
@@ -100,6 +101,3 @@ EXPOSE 3000
 
 # Start the application
 CMD ["node", "apps/web/server.js"]
-
-
-
