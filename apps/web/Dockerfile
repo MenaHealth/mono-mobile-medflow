@@ -41,12 +41,6 @@ ARG TELEGRAM_BOT_TOKEN
 ARG NEXTAUTH_URL_INTERNAL
 ARG NODE_ENV
 
-# Copy necessary files from builder
-#COPY --from=builder /app/out/json/ .
-#COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-#COPY --from=builder /app/apps/web ./apps/web
-#COPY turbo.json .
-
 # Install dependencies
 RUN npm install -g pnpm@8.15.4
 RUN pnpm install --frozen-lockfile
@@ -73,15 +67,17 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
     && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
 
-# Debug: List the contents of the web directory before the build
-RUN ls -lah apps/web
-
 
 # Build the project (from the monorepo root)
 RUN pnpm run build --filter=web
 RUN ls -lah apps/web/.next || echo "❌ .next directory is missing"
 RUN ls -lah apps/web/.next/standalone || echo "❌ .next/standalone directory is missing"
 
+# Copy necessary files from builder
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/apps/web ./apps/web
+COPY turbo.json .
 
 # Stage 4: Run the application
 FROM base AS runner
