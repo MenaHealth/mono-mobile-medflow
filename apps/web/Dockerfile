@@ -76,8 +76,8 @@ ENV NODE_ENV=${NODE_ENV}
 ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
-# Build the project with verbose output
-RUN pnpm run build --filter=web -- --verbose
+# Build the project
+RUN pnpm run build --filter=web
 
 # Stage 4: Run the application
 FROM base AS runner
@@ -124,4 +124,6 @@ EXPOSE 3000
 
 # Start the application
 CMD ["node", "apps/web/server.js"]
+
+
 
