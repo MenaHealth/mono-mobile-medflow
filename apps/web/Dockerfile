@@ -31,6 +31,10 @@ COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/apps/web ./apps/web
 COPY turbo.json .
 
+# Set environment variables for build
+ARG MONGODB_URI
+ENV MONGODB_URI=${MONGODB_URI}
+
 # Build the project
 RUN pnpm run build --filter=web
 
@@ -48,12 +52,14 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
-# Set environment variables
+# Set environment variables for runtime
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV MONGODB_URI=${MONGODB_URI}
 
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Start the application
 CMD ["node", "apps/web/server.js"]
+
