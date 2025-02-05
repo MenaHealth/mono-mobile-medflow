@@ -10,17 +10,8 @@ WORKDIR /app
 FROM base AS builder
 RUN npm install -g pnpm@8.15.4 turbo@2.4.0
 
-# Copy root package.json, pnpm-lock.yaml, and workspace configs
-COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
-
-# Copy the web app package.json
-COPY apps/web/package.json ./apps/web/
-
-# Copy Turbo config
-COPY turbo.json ./
-
-# Copy the appbuilder-react tgz file
-COPY apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
+# Copy all files
+COPY . .
 
 # Prune the workspace for the web app
 RUN turbo prune web --docker
@@ -37,6 +28,7 @@ RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY --from=builder /app/out/full/ .
+COPY --from=builder /app/apps/web ./apps/web
 COPY turbo.json .
 
 # Build the project
