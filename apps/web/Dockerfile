@@ -8,6 +8,7 @@ WORKDIR /app
 
 # Copy the package.json (and only that if package-lock.json is not available)
 COPY package.json package-lock.json ./
+
 COPY lib ./lib
 
 # Install all dependencies
