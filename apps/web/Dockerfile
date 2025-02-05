@@ -17,6 +17,30 @@ RUN turbo prune --scope=web --docker
 
 # Stage 3: Build the application
 FROM base AS installer
+
+# Declare build arguments for variable substitution
+ARG MONGODB_URI
+ARG NEXTAUTH_SECRET
+ARG NEXT_PUBLIC_API_URL
+ARG NEXTAUTH_URL
+ARG DO_SPACES_CDN_ENDPOINT
+ARG DO_SPACES_BUCKET
+ARG DO_SPACES_ENDPOINT
+ARG DO_SPACES_KEY
+ARG DO_SPACES_REGION
+ARG DO_SPACES_SECRET
+ARG GMAIL_SENDER_EMAIL
+ARG GOOGLE_CLIENT_ID
+ARG GOOGLE_CLIENT_SECRET
+ARG JWT_REFRESH_SECRET
+ARG JWT_SECRET
+ARG MEDFLOW_KEY
+ARG MEDFLOW_SENDGRID_KEY
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+ARG TELEGRAM_BOT_TOKEN
+ARG NEXTAUTH_URL_INTERNAL
+ARG NODE_ENV
+
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
