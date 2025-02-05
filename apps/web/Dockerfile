@@ -3,13 +3,13 @@
 # ----- Stage 1: Build the Next.js App -----
 FROM node:18-bullseye AS builder
 
-# Enable corepack for pnpm
-RUN corepack enable
+# Install pnpm manually instead of relying on Corepack
+RUN npm install -g pnpm@8.15.4
 
 # Set working directory
 WORKDIR /app
 
-# Copy the root package.json and package-lock.json
+# Copy the root package.json and pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./
 
 # Copy all workspace packages
@@ -29,8 +29,8 @@ RUN pnpm run build
 # ----- Stage 2: Run the Next.js App -----
 FROM node:18-alpine
 
-# Enable corepack for pnpm
-RUN corepack enable
+# Install pnpm manually instead of relying on Corepack
+RUN npm install -g pnpm@8.15.4
 
 # Set production environment variable
 ENV NODE_ENV=production
