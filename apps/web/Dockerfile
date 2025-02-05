@@ -124,4 +124,5 @@ ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
 EXPOSE 3001
-CMD ["node", "server.js"]
+RUN ls -lah /app/.next/standalone
+CMD ["node", ".next/standalone/server.js"]
