@@ -20,6 +20,8 @@ COPY apps/web/package.json ./apps/web/
 
 # Copy Turbo config
 COPY turbo.json ./
+# Copy the appbuilder-react tgz file for agora video
+COPY apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
 
 # Prune the workspace for the web app
 RUN turbo prune web --docker
