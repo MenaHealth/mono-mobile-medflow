@@ -7,14 +7,14 @@ FROM node:18-bullseye AS builder
 WORKDIR /app
 
 # Copy the root package.json and package-lock.json
-COPY ../../package.json ../../package-lock.json ./
+COPY package.json package-lock.json ./
 
-# Copy all workspace packages
-COPY ../../packages ./packages
-COPY ../../apps/web ./apps/web
+# Copy all workspace packages and apps
+COPY packages ./packages
+COPY apps/web ./apps/web
 
-# Copy the lib folder specifically from apps/web
-COPY ./lib ./lib
+# Copy the lib folder inside apps/web
+COPY apps/web/lib ./apps/web/lib
 
 # Install all dependencies
 RUN npm install
@@ -33,9 +33,9 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 # Copy built artifacts and necessary files from the builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/apps/web/.next ./.next
+COPY --from=builder /app/apps/web/package.json ./
+COPY --from=builder /app/apps/web/public ./public
 COPY --from=builder /app/apps/web/lib ./apps/web/lib
 
 # Install only production dependencies
