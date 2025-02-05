@@ -82,9 +82,9 @@ RUN ls -la apps/web
 # Build the project (from the monorepo root)
 RUN pnpm run build --filter=web
 # Copy standalone build
-COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=installer /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/web/.next/standalone /app/.next/standalone
+COPY --from=builder /app/apps/web/.next/static /app/apps/web/.next/static
+COPY --from=builder /app/apps/web/public /app/apps/web/public
 
 # Stage 4: Run the application
 FROM base AS runner
