@@ -60,10 +60,8 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
     && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
 
-# Install dependencies
+# Install dependencies and build
 RUN pnpm install --frozen-lockfile
-
-# Build the project
 RUN pnpm run build --filter=web
 
 # Stage 3: Run the application
@@ -72,13 +70,14 @@ WORKDIR /app
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-USER nextjs
 
 # Copy necessary files
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --from=builder /app/apps/web ./apps/web
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 # Install pnpm
 RUN npm install -g pnpm@8.15.4
@@ -114,6 +113,9 @@ ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 RUN ls -la
 RUN ls -la .next
 
+USER nextjs
+
+
 EXPOSE 3001
 
-CMD ["node", "apps/web/.next/standalone/server.js"]
+CMD ["node", "server.js"]
