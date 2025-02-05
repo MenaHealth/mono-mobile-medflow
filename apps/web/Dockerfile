@@ -2,8 +2,7 @@
 
 # Stage 1: Setup base
 FROM node:18-alpine AS base
-RUN apk add --no-cache libc6-compat
-RUN apk update
+RUN apk add --no-cache libc6-compat && apk update
 WORKDIR /app
 
 # Stage 2: Install dependencies
@@ -13,8 +12,8 @@ RUN npm install -g pnpm@8.15.4 turbo@2.4.0
 # Copy all files
 COPY . .
 
-# Prune the workspace for the web app
-RUN turbo prune web --docker
+# Prune the workspace for the web app using the recommended flag
+RUN turbo prune --scope=web --docker
 
 # Stage 3: Build the application
 FROM base AS installer
@@ -53,7 +52,10 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
     && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
 
-# Build the project
+# (Optional) Debug: list the contents of the web directory
+RUN ls -la apps/web
+
+# Build the project (from the monorepo root)
 RUN pnpm run build --filter=web
 
 # Stage 4: Run the application
@@ -61,8 +63,7 @@ FROM base AS runner
 WORKDIR /app
 
 # Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 USER nextjs
 
 # Copy built application
@@ -73,8 +74,6 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/publ
 # Set environment variables for runtime
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Copy environment variables from build stage
 ENV MONGODB_URI=${MONGODB_URI}
 ENV DO_SPACES_CDN_ENDPOINT=${DO_SPACES_CDN_ENDPOINT}
 ENV DO_SPACES_BUCKET=${DO_SPACES_BUCKET}
@@ -96,8 +95,5 @@ ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
-# Expose the port the app runs on
 EXPOSE 3000
-
-# Start the application
 CMD ["node", "apps/web/server.js"]
