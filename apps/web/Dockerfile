@@ -34,9 +34,10 @@ COPY turbo.json .
 # Set environment variables for build
 ARG MONGODB_URI
 ENV MONGODB_URI=${MONGODB_URI}
+ENV NEXT_PUBLIC_MONGODB_URI=${MONGODB_URI}
 
 # Build the project
-RUN pnpm run build --filter=web
+RUN MONGODB_URI=${MONGODB_URI} pnpm run build --filter=web
 
 # Stage 4: Run the application
 FROM base AS runner

@@ -4,7 +4,7 @@ const nextConfig = {
     swcMinify: true,
     transpilePackages: ["@repo/ui"],
     env: {
-        MONGODB_URI: process.env.MONGODB_URI,
+        MONGODB_URI: process.env.MONGODB_URI || process.env.NEXT_PUBLIC_MONGODB_URI,
         NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
