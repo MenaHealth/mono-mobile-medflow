@@ -74,10 +74,17 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 USER nextjs
 
+# Copy package.json and pnpm-lock.yaml
+COPY --from=builder /app/apps/web/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
 # Copy built application
 COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./.next/static
 COPY --from=builder /app/apps/web/public ./public
+
+# Install production dependencies
+RUN npm install --production
 
 # Set environment variables for runtime
 ENV NODE_ENV=production
@@ -103,10 +110,10 @@ ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
-EXPOSE 3001
-
 # Add these lines for debugging
 RUN ls -la
 RUN ls -la .next
+
+EXPOSE 3001
 
 CMD ["node", "server.js"]
