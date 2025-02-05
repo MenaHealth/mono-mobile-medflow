@@ -73,15 +73,14 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
     && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
 
-# (Optional) Debug: list the contents of the web directory
-RUN ls -la apps/web
+# Debug: List the contents of the web directory before the build
+RUN ls -lah apps/web
 
 # Build the project (from the monorepo root)
 RUN pnpm run build --filter=web
-# Copy standalone build
-COPY --from=builder /app/apps/web/.next/standalone /app/.next/standalone
-COPY --from=builder /app/apps/web/.next/static /app/apps/web/.next/static
-COPY --from=builder /app/apps/web/public /app/apps/web/public
+
+# Debug: Check if .next/standalone exists after build
+RUN ls -lah apps/web/.next
 
 # Stage 4: Run the application
 FROM base AS runner
@@ -90,6 +89,9 @@ WORKDIR /app
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 USER nextjs
+
+# Debug: Confirm files exist
+RUN ls -lah /app/.next/standalone
 
 # Copy built application
 COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
