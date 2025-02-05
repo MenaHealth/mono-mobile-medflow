@@ -23,7 +23,7 @@ COPY apps/web/lib ./apps/web/lib
 RUN pnpm install --frozen-lockfile
 
 # Build the Next.js app
-RUN pnpm run build
+RUN pnpm exec turbo run build --filter=...
 
 
 # ----- Stage 2: Run the Next.js App -----
