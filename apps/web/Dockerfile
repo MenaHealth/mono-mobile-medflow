@@ -7,9 +7,7 @@ FROM node:18-bullseye AS builder
 WORKDIR /app
 
 # Copy the package.json (and only that if package-lock.json is not available)
-COPY package.json ./
-
-# Copy the lib directory (if you have one)
+COPY package.json package-lock.json ./
 COPY lib ./lib
 
 # Install all dependencies
