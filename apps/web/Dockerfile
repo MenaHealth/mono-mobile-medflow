@@ -26,7 +26,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm exec turbo run build --no-recursive
 
 # ----- Stage 2: Run the Next.js App -----
-FROM node:18-alpineatatt
+FROM node:18-alpine
 
 # Install pnpm manually instead of relying on Corepack
 RUN npm install -g pnpm@8.15.4
