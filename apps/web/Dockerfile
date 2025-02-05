@@ -42,10 +42,10 @@ ARG NEXTAUTH_URL_INTERNAL
 ARG NODE_ENV
 
 # Copy necessary files from builder
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/apps/web ./apps/web
-COPY turbo.json .
+#COPY --from=builder /app/out/json/ .
+#COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+#COPY --from=builder /app/apps/web ./apps/web
+#COPY turbo.json .
 
 # Install dependencies
 RUN npm install -g pnpm@8.15.4
@@ -75,6 +75,7 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
 
 # Debug: List the contents of the web directory before the build
 RUN ls -lah apps/web
+
 
 # Build the project (from the monorepo root)
 RUN pnpm run build --filter=web
