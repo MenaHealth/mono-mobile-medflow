@@ -5,18 +5,38 @@ FROM node:18-alpine AS base
 RUN apk add --no-cache libc6-compat && apk update
 WORKDIR /app
 
-# Stage 2: Install dependencies
+# Stage 2: Install dependencies and build
 FROM base AS builder
 RUN npm install -g pnpm@8.15.4 turbo@2.4.0
 
 # Copy all files
 COPY . .
 
-# Prune the workspace for the web app using the recommended flag
+# Prune the workspace for the web app
 RUN turbo prune --scope=web --docker
 
-# Stage 3: Build the application
-FROM base AS installer
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Build the project
+RUN pnpm run build --filter=web
+
+# Stage 3: Run the application
+FROM base AS runner
+WORKDIR /app
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+USER nextjs
+
+# Copy built application
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/public ./apps/web/public
+
+# Set environment variables for runtime
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Declare build arguments for variable substitution
 ARG MONGODB_URI
@@ -68,34 +88,6 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
 
 
-# Build the project (from the monorepo root)
-RUN pnpm run build --filter=web
-RUN ls -lah apps/web/.next || echo "❌ .next directory is missing"
-RUN ls -lah apps/web/.next/standalone || echo "❌ .next/standalone directory is missing"
-
-# Copy necessary files from builder
-COPY --from=builder /app/out/json/ .
-COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/apps/web ./apps/web
-COPY turbo.json .
-
-# Stage 4: Run the application
-FROM base AS runner
-WORKDIR /app
-
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-USER nextjs
-
-# Debug: Confirm files exist
-RUN ls -lah /app/.next/standalone
-
-# Copy built application
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-
-# Set environment variables for runtime
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV MONGODB_URI=${MONGODB_URI}
