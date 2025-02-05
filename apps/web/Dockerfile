@@ -1,7 +1,5 @@
 # apps/web/Dockerfile
 
-# apps/web/Dockerfile
-
 # Stage 1: Setup base
 FROM node:18-alpine AS base
 RUN apk add --no-cache libc6-compat
@@ -20,25 +18,28 @@ COPY apps/web/package.json ./apps/web/
 
 # Copy Turbo config
 COPY turbo.json ./
-# Copy the appbuilder-react tgz file for agora video
+
+# Copy the appbuilder-react tgz file
 COPY apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
 
 # Prune the workspace for the web app
 RUN turbo prune web --docker
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
 # Stage 3: Build the application
 FROM base AS installer
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
 RUN npm install -g pnpm@8.15.4
+
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Build the project
+# Copy source code
 COPY --from=builder /app/out/full/ .
 COPY turbo.json .
+
+# Build the project
 RUN pnpm run build --filter=web
 
 # Stage 4: Run the application
