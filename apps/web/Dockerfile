@@ -1,64 +1,69 @@
 # apps/web/Dockerfile
 
-# ----- Stage 1: Build the Next.js App -----
-FROM node:18-bullseye AS builder
-
-# Install pnpm manually
-RUN npm install -g pnpm@8.15.4
+# ----- Base Image -----
+FROM node:18-alpine AS base
 
 # Set working directory
 WORKDIR /app
 
-# Copy the root package.json and pnpm-lock.yaml
-COPY package.json pnpm-lock.yaml ./
+# ----- Builder Stage -----
+FROM base AS builder
 
-# Copy all workspace packages
-COPY packages ./packages
-COPY apps/web ./apps/web
-COPY turbo.json pnpm-workspace.yaml ./
-
-# Ensure the `lib/` folder inside `apps/web/` is copied
-COPY apps/web/lib ./apps/web/lib
-
-# 🔥 Inject environment variables at build time 🔥
-ARG MONGODB_URI
-ARG NEXTAUTH_SECRET
-ARG NEXT_PUBLIC_API_URL
-ARG NEXTAUTH_URL
-ENV MONGODB_URI=$MONGODB_URI
-ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXTAUTH_URL=$NEXTAUTH_URL
-
-# Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile
-
-# Build the Next.js app
-RUN pnpm exec turbo run build2
-
-# ----- Stage 2: Run the Next.js App -----
-FROM node:18-alpine
-
-# Install pnpm manually
+# Install pnpm globally
 RUN npm install -g pnpm@8.15.4
 
-# Set runtime environment variable
+# Install Turbo globally (replace `<your-major-version>` with your Turbo version)
+RUN pnpm add -g turbo@<your-major-version>
+
+# Copy all monorepo files
+COPY . .
+
+# 🔥 Turbo Prune - Only keep required files for `web` workspace
+RUN turbo prune web --docker
+
+# ----- Dependencies Stage -----
+FROM base AS installer
+
+# Set working directory
+WORKDIR /app
+
+# Copy pruned dependency files
+COPY --from=builder /app/out/json/ .
+
+# Install only necessary dependencies
+RUN pnpm install --frozen-lockfile --prod
+
+# Copy the full pruned repo for building
+COPY --from=builder /app/out/full/ .
+
+# 🔥 Build Next.js App
+RUN pnpm exec turbo run build --filter=web
+
+# ----- Runner Stage -----
+FROM base AS runner
+
+# Set working directory
+WORKDIR /app
+
+# Ensure non-root execution
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+# Set environment variables
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL=https://medflow.cloud
+ENV NEXTAUTH_URL=https://medflow.cloud
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+ENV MONGODB_URI=${MONGODB_URI}
 
-# Set working directory
-WORKDIR /app
-
-# Copy built artifacts and necessary files from the builder stage
-COPY --from=builder /app/apps/web/.next ./.next
-COPY --from=builder /app/apps/web/package.json ./
-COPY --from=builder /app/apps/web/public ./public
-COPY --from=builder /app/apps/web/lib ./apps/web/lib
-
-# Install only production dependencies
-RUN pnpm install --prod --frozen-lockfile
+# Copy built artifacts
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 # Expose the port
 EXPOSE 3001
 
-# Start the Next.js app
-CMD ["pnpm", "start"]
+# Start the app
+CMD node apps/web/server.js

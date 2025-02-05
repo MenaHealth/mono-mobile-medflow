@@ -57,6 +57,18 @@ const nextConfig = {
                 port: '',
                 pathname: '/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'stage.medflow.cloud',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.stage.medflow.cloud',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
     async headers() {
