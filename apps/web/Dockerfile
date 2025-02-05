@@ -14,7 +14,7 @@ COPY ../../packages ./packages
 COPY ../../apps/web ./apps/web
 
 # Copy the lib folder specifically from apps/web
-COPY ../../apps/web/lib ./apps/web/lib
+COPY ./lib ./lib
 
 # Install all dependencies
 RUN npm install
