@@ -2,7 +2,7 @@
   "name": "mono-mobile-medflow",
   "private": true,
   "scripts": {
-    "build": "turbo run build --filter=apps/web",
+    "build": "turbo run build --filter=web",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
