@@ -41,20 +41,17 @@ ARG TELEGRAM_BOT_TOKEN
 ARG NEXTAUTH_URL_INTERNAL
 ARG NODE_ENV
 
+# Copy necessary files from builder
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/apps/web/lib/appbuilder-react-3.0.30-1-bZWPdTGmSr.tgz ./apps/web/lib/
-RUN npm install -g pnpm@8.15.4
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy source code
-COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/apps/web ./apps/web
 COPY turbo.json .
 
-# Create a temporary .env.local file for Next.js to pick up during the build.
+# Install dependencies
+RUN npm install -g pnpm@8.15.4
+RUN pnpm install --frozen-lockfile
+
+# Create .env.local file for Next.js
 RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> apps/web/.env.local \
     && echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" >> apps/web/.env.local \
