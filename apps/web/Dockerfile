@@ -15,6 +15,7 @@ COPY package.json pnpm-lock.yaml ./
 # Copy all workspace packages
 COPY packages ./packages
 COPY apps/web ./apps/web
+COPY turbo.json pnpm-workspace.yaml ./
 
 # Ensure the `lib/` folder inside `apps/web/` is copied
 COPY apps/web/lib ./apps/web/lib
