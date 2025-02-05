@@ -15,29 +15,6 @@ COPY . .
 # Prune the workspace for the web app
 RUN turbo prune --scope=web --docker
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Build the project
-RUN pnpm run build --filter=web
-
-# Stage 3: Run the application
-FROM base AS runner
-WORKDIR /app
-
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-USER nextjs
-
-# Copy built application
-COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public
-
-# Set environment variables for runtime
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
 # Declare build arguments for variable substitution
 ARG MONGODB_URI
 ARG NEXTAUTH_SECRET
@@ -61,10 +38,6 @@ ARG TELEGRAM_BOT_TOKEN
 ARG NEXTAUTH_URL_INTERNAL
 ARG NODE_ENV
 
-# Install dependencies
-RUN npm install -g pnpm@8.15.4
-RUN pnpm install --frozen-lockfile
-
 # Create .env.local file for Next.js
 RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> apps/web/.env.local \
@@ -87,7 +60,26 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
     && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
     && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
 
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
+# Build the project
+RUN pnpm run build --filter=web
+
+# Stage 3: Run the application
+FROM base AS runner
+WORKDIR /app
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+USER nextjs
+
+# Copy built application
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/public ./apps/web/public
+
+# Set environment variables for runtime
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV MONGODB_URI=${MONGODB_URI}
@@ -112,5 +104,5 @@ ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
 EXPOSE 3001
-RUN ls -lah /app/.next/standalone
-CMD ["node", ".next/standalone/server.js"]
+
+CMD ["node", "apps/web/server.js"]
