@@ -13,7 +13,7 @@ FROM base AS builder
 RUN npm install -g pnpm@8.15.4
 
 # Install Turbo globally (replace `<your-major-version>` with your Turbo version)
-RUN pnpm add -g turbo@<your-major-version>
+RUN pnpm add -g turbo@2.4.0
 
 # Copy all monorepo files
 COPY . .
