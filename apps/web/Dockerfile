@@ -76,8 +76,8 @@ USER nextjs
 
 # Copy built application
 COPY --from=builder /app/apps/web/.next/standalone ./
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/web/.next/static ./.next/static
+COPY --from=builder /app/apps/web/public ./public
 
 # Set environment variables for runtime
 ENV NODE_ENV=production
@@ -105,4 +105,8 @@ ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
 EXPOSE 3001
 
-CMD ["node", "apps/web/server.js"]
+# Add these lines for debugging
+RUN ls -la
+RUN ls -la .next
+
+CMD ["node", "server.js"]
