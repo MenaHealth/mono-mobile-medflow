@@ -37,7 +37,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
     "@react-oauth/google": "^0.12.1",
-    "@repo/ui": "*",
+    "@repo/ui": "workspace:*",
     "@sendgrid/mail": "^8.1.4",
     "@tanstack/react-table": "^8.20.5",
     "@types/jsonwebtoken": "^9.0.7",
