@@ -12,8 +12,8 @@ WORKDIR /app
 FROM base AS builder
 RUN npm install -g pnpm@8.15.4 turbo@2.4.0
 
-# Copy root package.json and lockfile
-COPY package.json pnpm-lock.yaml* ./
+# Copy root package.json, pnpm-lock.yaml, and workspace configs
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 
 # Copy the web app package.json
 COPY apps/web/package.json ./apps/web/
@@ -55,7 +55,7 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/publ
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Expose the port the app runs on
 EXPOSE 3000
