@@ -2,47 +2,63 @@
 
 # apps/web/Dockerfile
 
-# Stage 1: Build the Next.js app
-FROM node:18-alpine AS builder
-
-# Install pnpm
-RUN npm install -g pnpm@8.15.4
-
-# Set working directory
+# Stage 1: Setup base
+FROM node:18-alpine AS base
+RUN apk add --no-cache libc6-compat
+RUN apk update
 WORKDIR /app
 
-# Copy the root package.json and pnpm-lock.yaml (if it exists)
+# Stage 2: Install dependencies
+FROM base AS builder
+RUN npm install -g pnpm@8.15.4 turbo@2.4.0
+
+# Copy root package.json and lockfile
 COPY package.json pnpm-lock.yaml* ./
 
-# Copy the app's package.json
+# Copy the web app package.json
 COPY apps/web/package.json ./apps/web/
+
+# Copy Turbo config
+COPY turbo.json ./
+
+# Prune the workspace for the web app
+RUN turbo prune web --docker
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
-COPY . .
+# Stage 3: Build the application
+FROM base AS installer
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN npm install -g pnpm@8.15.4
+RUN pnpm install --frozen-lockfile
 
-# Build the Next.js app
+# Build the project
+COPY --from=builder /app/out/full/ .
+COPY turbo.json .
 RUN pnpm run build --filter=web
 
-# Stage 2: Run the Next.js app
-FROM node:18-alpine
-
-# Set working directory
+# Stage 4: Run the application
+FROM base AS runner
 WORKDIR /app
 
-# Copy built artifacts and necessary files from the builder stage
-COPY --from=builder /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/apps/web/package.json ./apps/web/
-COPY --from=builder /app/node_modules ./node_modules
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+USER nextjs
+
+# Copy built application
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 # Set environment variables
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED 1
 
 # Expose the port the app runs on
 EXPOSE 3000
 
-# Start the Next.js app
-CMD ["node", "apps/web/.next/standalone/apps/web/server.js"]
+# Start the application
+CMD ["node", "apps/web/server.js"]
