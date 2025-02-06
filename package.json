@@ -8,7 +8,7 @@
   "scripts": {
     "build": "turbo run build",
     "buildWeb": "turbo run build --filter=web",
-    "buildMobile": "turbo run build --filter=wmobile",
+    "buildMobile": "turbo run build --filter=mobile",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

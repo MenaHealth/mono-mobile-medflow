@@ -64,7 +64,7 @@ RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
 RUN pnpm install --frozen-lockfile
 
 # Build the project
-RUN pnpm run buildWeb
+RUN pnpm run build --filter=web
 
 # Stage 3: Run the application
 FROM base AS runner
