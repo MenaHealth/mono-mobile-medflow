@@ -1,7 +1,5 @@
-// apps/web/app/api/patient/location/route.ts
+// app/api/patient/location/route.ts
 // previously used in the NewPatientForm.tsx form - not currently used
-
-export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
     try {

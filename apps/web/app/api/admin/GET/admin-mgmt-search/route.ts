@@ -1,4 +1,4 @@
-// apps/web/app/api/admin/GET/admin-mgmt-search/route.ts
+// app/api/admin/GET/admin-mgmt-search/route.ts
 
 export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from "next/server";

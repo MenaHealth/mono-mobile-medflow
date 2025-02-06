@@ -1,4 +1,4 @@
-// apps/web/app/complete-signup/page.tsx
+// app/complete-signup/page.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';

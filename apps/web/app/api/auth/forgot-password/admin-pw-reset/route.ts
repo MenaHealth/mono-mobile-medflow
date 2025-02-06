@@ -1,4 +1,4 @@
-// apps/web/app/api/auth/forgot-password/admin-pw-reset/route.ts
+// app/api/auth/forgot-password/admin-pw-reset/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';

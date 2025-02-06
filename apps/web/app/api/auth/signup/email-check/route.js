@@ -1,4 +1,4 @@
-// apps/web/app/api/auth/signup/email-check/route.ts
+// app/api/auth/signup/email-check/route.ts
 export const dynamic = 'force-dynamic';
 
 import User from '@/models/user';

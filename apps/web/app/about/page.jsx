@@ -1,4 +1,4 @@
-// apps/web/app/about/page.tsx
+// app/about/page.tsx
 'use client';
 
 import { motion } from "framer-motion"

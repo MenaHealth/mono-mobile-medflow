@@ -1,4 +1,4 @@
-// apps/web/app/auth/user-terms-of-service/page.tsx
+// app/auth/user-terms-of-service/page.tsx
 
 import React from 'react';
 import TermsOfService from '@/components/auth/signup/0TermsOfService';

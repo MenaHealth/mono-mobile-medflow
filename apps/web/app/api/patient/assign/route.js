@@ -1,9 +1,6 @@
-// apps/web/app/api/patient/assign/route.ts
+// app/api/patient/assign/route.ts
 import dbConnect from "@/utils/database";
 import { ObjectId } from 'mongodb';
-
-
-export const dynamic = 'force-dynamic';
 
 export async function PATCH(req, res) {
   const { patientId, doctor, status, priority, medOrders, rxOrders } = await req.json();

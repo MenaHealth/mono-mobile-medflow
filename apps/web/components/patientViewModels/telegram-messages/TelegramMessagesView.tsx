@@ -29,7 +29,7 @@ interface TelegramMessagesViewProps {
     sendAudioMessage: (file: Blob, duration: number) => void;
     isLoading: boolean;
     telegramChatId: string;
-    scrollAreaRef: React.RefObject<HTMLDivElement | null>;
+    scrollAreaRef: React.RefObject<HTMLDivElement>;
     isLoadingMessages: boolean;
 }
 

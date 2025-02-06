@@ -1,6 +1,4 @@
-// apps/web/app/api/telegram-bot/[telegramChatId]/new-patient/route.ts
-
-export const dynamic = 'force-dynamic';
+// app/api/telegram-bot/[telegramChatId]/new-patient/route.ts
 
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/database";

@@ -1,121 +1,40 @@
-# apps/web/Dockerfile
+#medflow/Dockerfile
+# Stage 1: Build the Next.js app
+FROM node:18-bullseye AS builder
 
-# Stage 1: Setup base
-FROM node:18-alpine AS base
-RUN apk add --no-cache libc6-compat && apk update
+# Set working directory
 WORKDIR /app
 
-# Stage 2: Install dependencies and build
-FROM base AS builder
-RUN npm install -g pnpm@8.15.4 turbo@2.4.0
+# Copy the package.json, package-lock.json, and lib directory
+COPY package.json package-lock.json ./
+COPY lib ./lib
 
-# Copy all files
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
 
-# Prune the workspace for the web app
-RUN turbo prune --scope=web --docker
+# Build the Next.js app
+RUN npm run build
 
-# Declare build arguments for variable substitution
-ARG MONGODB_URI
-ARG NEXTAUTH_SECRET
-ARG NEXT_PUBLIC_API_URL
-ARG NEXTAUTH_URL
-ARG DO_SPACES_CDN_ENDPOINT
-ARG DO_SPACES_BUCKET
-ARG DO_SPACES_ENDPOINT
-ARG DO_SPACES_KEY
-ARG DO_SPACES_REGION
-ARG DO_SPACES_SECRET
-ARG GMAIL_SENDER_EMAIL
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
-ARG JWT_REFRESH_SECRET
-ARG JWT_SECRET
-ARG MEDFLOW_KEY
-ARG MEDFLOW_SENDGRID_KEY
-ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
-ARG TELEGRAM_BOT_TOKEN
-ARG NEXTAUTH_URL_INTERNAL
-ARG NODE_ENV
+# Stage 2: Run the Next.js app
+FROM node:18-alpine
 
-# Create .env.local file for Next.js
-RUN echo "MONGODB_URI=${MONGODB_URI}" > apps/web/.env.local \
-    && echo "NEXTAUTH_SECRET=${NEXTAUTH_SECRET}" >> apps/web/.env.local \
-    && echo "NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}" >> apps/web/.env.local \
-    && echo "NEXTAUTH_URL=${NEXTAUTH_URL}" >> apps/web/.env.local \
-    && echo "DO_SPACES_CDN_ENDPOINT=${DO_SPACES_CDN_ENDPOINT}" >> apps/web/.env.local \
-    && echo "DO_SPACES_BUCKET=${DO_SPACES_BUCKET}" >> apps/web/.env.local \
-    && echo "DO_SPACES_ENDPOINT=${DO_SPACES_ENDPOINT}" >> apps/web/.env.local \
-    && echo "DO_SPACES_KEY=${DO_SPACES_KEY}" >> apps/web/.env.local \
-    && echo "DO_SPACES_REGION=${DO_SPACES_REGION}" >> apps/web/.env.local \
-    && echo "DO_SPACES_SECRET=${DO_SPACES_SECRET}" >> apps/web/.env.local \
-    && echo "GMAIL_SENDER_EMAIL=${GMAIL_SENDER_EMAIL}" >> apps/web/.env.local \
-    && echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> apps/web/.env.local \
-    && echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> apps/web/.env.local \
-    && echo "JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}" >> apps/web/.env.local \
-    && echo "JWT_SECRET=${JWT_SECRET}" >> apps/web/.env.local \
-    && echo "MEDFLOW_KEY=${MEDFLOW_KEY}" >> apps/web/.env.local \
-    && echo "MEDFLOW_SENDGRID_KEY=${MEDFLOW_SENDGRID_KEY}" >> apps/web/.env.local \
-    && echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}" >> apps/web/.env.local \
-    && echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}" >> apps/web/.env.local \
-    && echo "NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}" >> apps/web/.env.local
+# Set runtime environment variables
+ENV NODE_ENV=production
 
-# Install dependencies and build
-RUN pnpm install --frozen-lockfile
-RUN pnpm run build --filter=web
-
-# Stage 3: Run the application
-FROM base AS runner
+# Set working directory
 WORKDIR /app
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+# Copy built artifacts from the builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/lib ./lib
 
-# Copy necessary files
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder --chown=nextjs:nodejs /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+# Install only production dependencies
+RUN npm install --only=production
 
-# Install pnpm
-RUN npm install -g pnpm@8.15.4
-
-# Install production dependencies
-RUN pnpm install --only=production
-
-# Set environment variables for runtime
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV MONGODB_URI=${MONGODB_URI}
-ENV DO_SPACES_CDN_ENDPOINT=${DO_SPACES_CDN_ENDPOINT}
-ENV DO_SPACES_BUCKET=${DO_SPACES_BUCKET}
-ENV DO_SPACES_ENDPOINT=${DO_SPACES_ENDPOINT}
-ENV DO_SPACES_KEY=${DO_SPACES_KEY}
-ENV DO_SPACES_REGION=${DO_SPACES_REGION}
-ENV DO_SPACES_SECRET=${DO_SPACES_SECRET}
-ENV GMAIL_SENDER_EMAIL=${GMAIL_SENDER_EMAIL}
-ENV GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-ENV GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-ENV JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
-ENV JWT_SECRET=${JWT_SECRET}
-ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-ENV NEXTAUTH_URL=${NEXTAUTH_URL}
-ENV MEDFLOW_KEY=${MEDFLOW_KEY}
-ENV MEDFLOW_SENDGRID_KEY=${MEDFLOW_SENDGRID_KEY}
-ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
-ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
-
-# Add these lines for debugging
-RUN ls -la
-RUN ls -la .next
-
-USER nextjs
-
-
-EXPOSE 3001
-
-CMD ["node", "server.js"]
+# Start the Next.js app
+CMD ["npm", "start"]

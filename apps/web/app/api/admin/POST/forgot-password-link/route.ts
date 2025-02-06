@@ -1,7 +1,4 @@
-// apps/web/app/api/admin/POST/forgot-password-link/route.ts
-
-export const dynamic = 'force-dynamic';
-
+// app/api/admin/POST/forgot-password-link/route.ts
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import dbConnect from './../../../../../utils/database';

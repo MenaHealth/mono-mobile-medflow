@@ -19,7 +19,7 @@
             sendAudioMessage,
             loadMessages,
             isLoading,
-            setMessages,
+            setMessages, // note we can still get setMessages from the view model if needed
         } = useTelegramMessagesViewModel(telegramChatId);
 
         const [isLoadingMessages, setIsLoadingMessages] = React.useState(true);
@@ -48,7 +48,7 @@
                             scrollAreaRef={scrollAreaRef}
                             telegramChatId={telegramChatId}
                             messages={messages}
-                            setMessages={setMessages}
+                            setMessages={setMessages} // pass from view model
                             newMessage={newMessage}
                             setNewMessage={setNewMessage}
                             sendMessage={sendMessage}

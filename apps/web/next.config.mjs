@@ -2,30 +2,6 @@
 const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
-    transpilePackages: ["@repo/ui"],
-    output: 'standalone',
-    env: {
-        MONGODB_URI: process.env.MONGODB_URI,
-        NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-        NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-        DO_SPACES_CDN_ENDPOINT: process.env.DO_SPACES_CDN_ENDPOINT,
-        DO_SPACES_BUCKET: process.env.DO_SPACES_BUCKET,
-        DO_SPACES_ENDPOINT: process.env.DO_SPACES_ENDPOINT,
-        DO_SPACES_KEY: process.env.DO_SPACES_KEY,
-        DO_SPACES_REGION: process.env.DO_SPACES_REGION,
-        DO_SPACES_SECRET: process.env.DO_SPACES_SECRET,
-        GMAIL_SENDER_EMAIL: process.env.GMAIL_SENDER_EMAIL,
-        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
-        JWT_SECRET: process.env.JWT_SECRET,
-        MEDFLOW_KEY: process.env.MEDFLOW_KEY,
-        MEDFLOW_SENDGRID_KEY: process.env.MEDFLOW_SENDGRID_KEY,
-        NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
-        NEXTAUTH_URL_INTERNAL: process.env.NEXTAUTH_URL_INTERNAL,
-    },
     images: {
         unoptimized: true,  // Bypass Next.js image optimization
         domains: [
@@ -34,8 +10,8 @@ const nextConfig = {
             'medflow-telegram.fra1.digitaloceanspaces.com',
             'fra1.digitaloceanspaces.com',
             'medflow-telegram.fra1.cdn.digitaloceanspaces.com',
-            'medflow.cloud',
-            'www.medflow.cloud',
+            'medflow.cloud', // Add your custom domain here
+            'www.medflow.cloud', // Include the "www" version too
         ],
         remotePatterns: [
             {
@@ -64,25 +40,13 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'medflow.cloud',
+                hostname: 'medflow.cloud', // Add your custom domain
                 port: '',
                 pathname: '/**',
             },
             {
                 protocol: 'https',
-                hostname: 'www.medflow.cloud',
-                port: '',
-                pathname: '/**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'stage.medflow.cloud',
-                port: '',
-                pathname: '/**',
-            },
-            {
-                protocol: 'https',
-                hostname: 'www.stage.medflow.cloud',
+                hostname: 'www.medflow.cloud', // Add the "www" version
                 port: '',
                 pathname: '/**',
             },
@@ -178,4 +142,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

@@ -1,4 +1,4 @@
-// apps/web/app/api/rx-order-qr-code/patient/[id]/route.ts
+// app/api/rx-order-qr-code/patient/[id]/route.ts
 
 import { NextResponse } from 'next/server';
 import Patient from '@/models/patient';

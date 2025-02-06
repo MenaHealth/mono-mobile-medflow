@@ -1,4 +1,4 @@
-// apps/web/app/api/telegram-bot/[telegramChatId]/get/route.ts
+// app/api/telegram-bot/[telegramChatId]/get/route.ts
 
 import { NextResponse } from "next/server";
 import dbConnect from "@/utils/database";

@@ -1,4 +1,4 @@
-// apps/web/app/api/patient/[id]/route.ts
+// app/api/patient/[id]/route.ts
 // getting + updating patient data + rx orders
 
 import { NextResponse } from 'next/server';

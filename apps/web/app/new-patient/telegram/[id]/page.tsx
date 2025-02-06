@@ -1,4 +1,4 @@
-// apps/web/app/new-patient/telegram/[id]/page.tsx
+// app/new-patient/telegram/[id]/page.tsx
 
 "use client";
 

@@ -1,4 +1,4 @@
-// apps/web/app/api/patient/[id]/notes/doctor-notes/route.ts
+// app/api/patient/[id]/notes/doctor-notes/route.ts
 
 import { NextResponse } from 'next/server';
 import Patient from "./../../../../../../models/patient";

@@ -1,4 +1,4 @@
-// apps/web/app/auth/page.tsx
+// app/auth/page.tsx
 "use client";
 
 import React, { useState } from "react";

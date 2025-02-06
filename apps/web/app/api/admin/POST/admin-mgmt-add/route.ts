@@ -1,4 +1,4 @@
-// apps/web/app/api/admin/POST/admin-mgmt-add/route.ts
+// app/api/admin/POST/admin-mgmt-add/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import Admin from "@/models/admin";

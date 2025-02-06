@@ -1,4 +1,4 @@
-// apps/web/app/api/patient/[id]/medications/rx-order/route.ts
+// app/api/patient/[id]/medications/rx-order/route.ts
 // Creating the RX order + QR code + rx order ID
 
 import { v4 as uuidv4 } from 'uuid';

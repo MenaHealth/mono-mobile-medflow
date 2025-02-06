@@ -1,6 +1,5 @@
-// apps/web/app/api/admin/POST/re-approve-users/route.ts
+// app/api/admin/POST/re-approve-users/route.ts
 
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import User from '@/models/user';
 import dbConnect from '@/utils/database';

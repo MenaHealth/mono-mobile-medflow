@@ -1,4 +1,4 @@
-// apps/web/app/api/google-user/[email]/route.ts
+// app/api/google-user/[email]/route.ts
 import GoogleUser from '@/models/googleUser';
 import dbConnect from '@/utils/database';
 

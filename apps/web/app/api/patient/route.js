@@ -1,4 +1,4 @@
-// apps/web/app/api/patient/route.js
+// app/api/patient/route.js
 import Patient from "@/models/patient";
 import dbConnect from "@/utils/database";
 

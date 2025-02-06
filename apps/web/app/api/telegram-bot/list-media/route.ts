@@ -1,4 +1,4 @@
-// apps/web/app/api/telegram-bot/list-media/route.ts
+// app/api/telegram-bot/list-media/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 

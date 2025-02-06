@@ -1,4 +1,4 @@
-// apps/web/app/api/telegram-bot/send-confirmation/route.ts
+// app/api/telegram-bot/send-confirmation/route.ts
 import { NextResponse } from "next/server";
 
 const TELEGRAM_BOT_API_URL = process.env.TELEGRAM_BOT_API_URL || "https://api.telegram.org";

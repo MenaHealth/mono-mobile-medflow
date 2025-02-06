@@ -1,5 +1,3 @@
-
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { sendVerificationEmail } from '@/utils/emails/forgot-password';
 import User from '@/models/user';

@@ -1,4 +1,4 @@
-// apps/web/app/api/admin/GET/med-orders/route.ts
+// app/api/admin/GET/med-orders/route.ts
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import dbConnect from './../../../../../utils/database';

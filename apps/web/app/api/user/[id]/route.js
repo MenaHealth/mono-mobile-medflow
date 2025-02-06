@@ -1,4 +1,4 @@
-// apps/web/app/api/user/[id]/route.js
+// app/api/user/[id]/route.js
 import User from "@/models/user"
 import dbConnect from "@/utils/database"
 import { getServerSession } from "next-auth/next"

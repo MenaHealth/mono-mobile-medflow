@@ -1,24 +1,23 @@
-// apps/web/app/api/admin/user/route.ts
+// app/api/admin/user/route.ts
 
-export const dynamic = 'force-dynamic';
-
-import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/user";
-import { verifyAdminToken, initializeDatabase } from "@/utils/adminAPI";
+import { NextRequest, NextResponse } from 'next/server';
+import User from '@/models/user';
+import dbConnect from "@/utils/database";
+import { getToken } from 'next-auth/jwt';
 
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    const token = await verifyAdminToken(request);
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-    if (!token) {
-        return NextResponse.redirect(new URL("/", request.url));
+    if (!token || !token.isAdmin) {
+        return NextResponse.redirect(new URL('/', request.url));
     }
 
     try {
-        await initializeDatabase();
-        const existingUser = await User.findById(params.id).select("-password");
+        await dbConnect();
+        const existingUser = await User.findById(params.id).select('-password');
         if (!existingUser) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
@@ -32,10 +31,10 @@ export async function PATCH(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    const token = await verifyAdminToken(request);
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-    if (!token) {
-        return NextResponse.redirect(new URL("/", request.url));
+    if (!token || !token.isAdmin) {
+        return NextResponse.redirect(new URL('/', request.url));
     }
 
     const {
@@ -53,7 +52,7 @@ export async function PATCH(
     } = await request.json();
 
     try {
-        await initializeDatabase();
+        await dbConnect();
 
         const existingUser = await User.findById(params.id);
 
@@ -81,8 +80,9 @@ export async function PATCH(
         const updatedUser = existingUser.toObject();
         delete updatedUser.password;
 
-        return NextResponse.json(updatedUser, { status: 200, headers: { "Content-Type": "application/json" } });
+        return NextResponse.json(updatedUser, { status: 200, headers: { 'Content-Type': 'application/json' } });
     } catch (error: any) {
         return NextResponse.json({ message: `Error updating user: ${error.message}` }, { status: 500 });
     }
 }
+

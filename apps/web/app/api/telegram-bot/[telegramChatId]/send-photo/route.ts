@@ -1,6 +1,4 @@
-// apps/web/app/api/telegram-bot/[telegramChatId]/send-photo/route.ts
-
-export const dynamic = 'force-dynamic';
+// app/api/telegram-bot/[telegramChatId]/send-photo/route.ts
 import TelegramThread from "@/models/telegramThread";
 import dbConnect from "@/utils/database";
 import { NextResponse } from "next/server";

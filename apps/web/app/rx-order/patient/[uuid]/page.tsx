@@ -1,4 +1,4 @@
-// apps/web/app/rx-order/patient/[id]/page.tsx
+// app/rx-order/patient/[id]/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';

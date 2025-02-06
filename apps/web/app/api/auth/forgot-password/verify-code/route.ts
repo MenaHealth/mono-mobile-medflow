@@ -1,6 +1,4 @@
-// apps/web/app/api/auth/forgot-password/verify-code/route.ts
-
-export const dynamic = 'force-dynamic';
+// app/api/auth/forgot-password/verify-code/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/user';
 import dbConnect from '@/utils/database';

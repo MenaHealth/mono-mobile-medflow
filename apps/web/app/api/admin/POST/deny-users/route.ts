@@ -1,6 +1,5 @@
-// apps/web/app/api/adminDashboard/POST/denied-users/route.ts
+// app/api/adminDashboard/POST/denied-users/route.ts
 
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '@/models/user';
@@ -46,3 +45,5 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: 'Failed to delete denied users' }, { status: 500 });
     }
 }
+
+export const dynamic = 'force-dynamic';

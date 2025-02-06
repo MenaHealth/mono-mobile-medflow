@@ -1,4 +1,4 @@
-// apps/web/app/patient-dashboard/dashboard/TableCell.tsx
+// app/patient-dashboard/dashboard/TableCell.tsx
 import React from 'react';
 
 interface TableCellProps {

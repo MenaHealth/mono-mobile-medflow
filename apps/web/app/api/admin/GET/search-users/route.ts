@@ -1,4 +1,4 @@
-// apps/web/app/api/admin/GET/search-users/route.ts
+// app/api/admin/GET/search-users/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/user";

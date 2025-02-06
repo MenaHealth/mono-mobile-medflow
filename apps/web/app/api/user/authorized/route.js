@@ -1,4 +1,4 @@
-// apps/web/app/api/user/authorized/route.ts
+// app/api/user/authorized/route.ts
 import User from '@/models/user';
 // import { connectToDB } from "@/utils/database";
 import dbConnect from "@/utils/database";

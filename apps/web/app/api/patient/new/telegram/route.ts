@@ -1,4 +1,4 @@
-// apps/web/app/api/patient/new/telegram/route.ts
+// app/api/patient/new/telegram/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/utils/database';
 import Patient from '@/models/patient';

@@ -1,4 +1,4 @@
-// apps/web/app/patient-dashboard/dashboard/DoctorCell.tsx
+// app/patient-dashboard/dashboard/DoctorCell.tsx
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { TableCell } from './TableCell';

@@ -1,4 +1,4 @@
-// apps/web/app/api/user/get-by-specialty/route.ts
+// app/api/user/get-by-specialty/route.ts
 import { NextResponse } from 'next/server';
 import User from '@/models/user';
 import dbConnect from '@/utils/database';

@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# MedFlow Project
 
-First, run the development server:
+![MedFlow Logo](public/assets/images/logo.svg)
 
+---
+
+## Getting Started (running and updating the code)
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+
+- Clone the repository:
+```bash
+git clone https://github.com/<your github username>/med-flow.git
+cd med-flow
+npm install
+```
+
+- Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
+```
+- Open http://localhost:3000 in your browser.
+
+- to log in, contact a senior developer with the most recent .env file, then put the .env file at the root of the med-flow folder.
+
+## To update the code, follow the following process:
+-create a new branch;
+```bash
+git checkout -b "newFeatureName"
+```
+- make your updates on this new branch and upload (push) them to the branch: 
+```bash
+git add files/that/were/updated 
+```
+```bash
+git commit -m "feature name, feature description, etc"
+```
+```bash
+git push
+```
+- then when complete, merge the main branch onto yours (or use a Git GUI for a better DEVx)
+```bash
+git merge staging 
+```
+- manage any merge conflicts that come up. once all the merge conflicts are satisfied, run 
+```bash
+npm build 
+```
+- manage any build conflicts that come up. once all the build conflicts are satisfied, run
+```bash
+git checkout staging
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- merge your new feature branch into the staging branch (there should not be any merge conflicts, but if there are correct them)
+```bash
+git merge newFeatureName
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
+- push your changes to the staging branch 
+ ```bash
+git push
+```
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

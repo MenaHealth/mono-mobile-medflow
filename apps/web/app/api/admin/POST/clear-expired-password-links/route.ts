@@ -1,6 +1,4 @@
-// apps/web/app/api/admin/POST/clear-expired-password-links/route.ts
-
-export const dynamic = 'force-dynamic';
+// app/api/admin/POST/clear-expired-password-links/route.ts
 import { NextResponse } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '@/models/user';

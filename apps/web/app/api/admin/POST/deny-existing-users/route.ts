@@ -1,6 +1,5 @@
-// apps/web/app/api/adminDashboard/POST/deny-existing-users/route.ts
+// app/api/adminDashboard/POST/deny-existing-users/route.ts
 
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '@/models/user';

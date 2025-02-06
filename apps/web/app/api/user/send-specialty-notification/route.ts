@@ -1,4 +1,4 @@
-// apps/web/app/api/user/send-specialty-notification/route.ts
+// app/api/user/send-specialty-notification/route.ts
 export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';

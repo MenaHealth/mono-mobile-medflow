@@ -1,4 +1,4 @@
-// apps/web/app/api/rx-order-qr-code/pharmacy/[uuid]/route.ts
+// app/api/rx-order-qr-code/pharmacy/[uuid]/route.ts
 // Getting the pharmacy RX order view
 
 import { NextResponse } from 'next/server';

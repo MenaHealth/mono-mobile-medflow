@@ -1,4 +1,4 @@
-// apps/web/app/api/signup/route.ts
+// app/api/signup/route.ts
 import { NextResponse } from 'next/server';
 import User from '@/models/user';
 import Admin from '@/models/admin';

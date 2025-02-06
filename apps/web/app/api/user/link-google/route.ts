@@ -1,4 +1,4 @@
-    // apps/web/app/api/user/link-google/route.ts
+    // app/api/user/link-google/route.ts
     export const dynamic = 'force-dynamic';
 
     import { NextResponse } from 'next/server';

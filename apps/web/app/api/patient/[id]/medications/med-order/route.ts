@@ -1,4 +1,4 @@
-// apps/web/app/api/patient/[id]/medications/med-order/route.ts
+// app/api/patient/[id]/medications/med-order/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import MedOrder, { type IMedOrder, type IMedication } from "../../../../../../models/medOrder"
 import Patient, { type IPatient } from "../../../../../../models/patient"
