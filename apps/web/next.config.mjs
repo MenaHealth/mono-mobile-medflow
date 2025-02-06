@@ -2,6 +2,7 @@
 const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
+    output: "standalone",
     images: {
         unoptimized: true,  // Bypass Next.js image optimization
         domains: [
@@ -47,6 +48,18 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'www.medflow.cloud', // Add the "www" version
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'stage.medflow.cloud', // Add your custom domain
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.stage.medflow.cloud', // Add the "www" version
                 port: '',
                 pathname: '/**',
             },

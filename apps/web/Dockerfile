@@ -105,10 +105,6 @@ ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=${NEXT_PUBLIC_GOOGLE_CLIENT_ID}
 ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
 ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
-# Add these lines for debugging
-RUN ls -la
-RUN ls -la .next
-
 EXPOSE 3001
 
-CMD ["node", "apps/web/server.js"]
+CMD ["node", "apps/web/.next/standalone/server.js"]
