@@ -116,4 +116,4 @@ RUN ls -la .next
 
 EXPOSE 3001
 
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]
