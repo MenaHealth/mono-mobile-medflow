@@ -135,6 +135,12 @@ const nextConfig = {
             topLevelAwait: true,
         };
 
+        // crypto fallback for the browser
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            crypto: "crypto-browserify",
+        };
+
         config.module.rules.push({
             test: /\.ttf$/,
             use: [

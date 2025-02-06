@@ -1,13 +1,19 @@
 // utils/encryptPhoto.ts
-import CryptoJS from 'crypto-js';
+import crypto from 'crypto';
 
 export const encryptPhoto = (file: File, encryptionKey: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
-            const fileContent = CryptoJS.lib.WordArray.create(reader.result as ArrayBuffer);
-            const encrypted = CryptoJS.AES.encrypt(fileContent, encryptionKey).toString();
-            resolve(encrypted);
+            const fileContent = Buffer.from(reader.result as ArrayBuffer); // Convert file to Buffer
+            const iv = crypto.randomBytes(16); // Generate a random IV
+            const key = Buffer.from(encryptionKey, 'hex'); // Convert encryptionKey to Buffer
+
+            const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+            const encrypted = Buffer.concat([cipher.update(fileContent), cipher.final()]);
+
+            const encryptedBase64 = iv.toString('hex') + ':' + encrypted.toString('hex');
+            resolve(encryptedBase64);
         };
         reader.onerror = (error) => reject(error);
         reader.readAsArrayBuffer(file);
@@ -16,40 +22,23 @@ export const encryptPhoto = (file: File, encryptionKey: string): Promise<string>
 
 export const decryptPhoto = async (encryptedBase64: string, encryptionKey: string): Promise<Blob> => {
     try {
-        // Convert encryptionKey to WordArray
-        // const key = CryptoJS.enc.Base64.parse(encryptionKey);
+        const [ivHex, encryptedHex] = encryptedBase64.split(':');
+        const iv = Buffer.from(ivHex, 'hex');
+        const encryptedData = Buffer.from(encryptedHex, 'hex');
+        const key = Buffer.from(encryptionKey, 'hex');
 
-        // Decrypt using CryptoJS
-        const decryptedData = CryptoJS.AES.decrypt(encryptedBase64, encryptionKey);
+        const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+        const decryptedBuffer = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
 
-        // Convert decrypted WordArray to ArrayBuffer
-        const decryptedArrayBuffer = decryptedData.toString(CryptoJS.enc.Base64url);
-
-        const decryptedUint8Array = new Uint8Array(decryptedArrayBuffer.length);
-        for (let i = 0; i < decryptedArrayBuffer.length; i++) {
-            decryptedUint8Array[i] = decryptedArrayBuffer.charCodeAt(i);
-        }
-
-
-        // Create Blob from Uint8Array
-        const decryptedBlob = new Blob([decryptedUint8Array], { type: 'image/webp' });
-
-        return decryptedBlob;
+        return new Blob([decryptedBuffer], { type: 'image/webp' });
     } catch (error) {
         console.error('Error decrypting photo:', error);
         throw error;
     }
 };
 
-
-
 export const generateEncryptionKey = () => {
-    const array = new Uint8Array(32);
-    window.crypto.getRandomValues(array);
-
-    const numArray = Array.from(array);
-
-    return btoa(String.fromCharCode.apply(null, numArray));
+    return crypto.randomBytes(32).toString('hex'); // Generate a 256-bit encryption key
 };
 
 export const convertToWebP = (file: File): Promise<Blob> => {
@@ -85,8 +74,8 @@ export const convertToWebP = (file: File): Promise<Blob> => {
 // Function to calculate SHA-256 hash of a File object
 export const calculateFileHash = async (file: File): Promise<string> => {
     const buffer = await file.arrayBuffer();
-    const hashBuffer = await window.crypto.subtle.digest('SHA-256', buffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
 };

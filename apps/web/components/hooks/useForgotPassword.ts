@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { sendVerificationEmail } from '@/utils/emails/forgot-password';
 import User from '@/models/user';
-import CryptoJS from 'crypto-js';
+import crypto from 'crypto';
 import dbConnect from "@/utils/database";
 import rateLimit from 'express-rate-limit';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -58,7 +58,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
             return res.status(200).json({ message: 'If the email exists, a verification code has been sent.' });
         }
 
-        const tempCode = CryptoJS.lib.WordArray.random(3).toString(CryptoJS.enc.Hex).toUpperCase();
+        const tempCode = crypto.randomBytes(3).toString('hex').toUpperCase();
 
         user.tempPasswordResetCode = tempCode;
         user.tempCodeExpiry = Date.now() + 15 * 60 * 1000;

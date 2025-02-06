@@ -3,7 +3,7 @@
 import { NextResponse } from 'next/server';
 import { sendVerificationEmail } from '@/utils/emails/forgot-password';
 import User from '@/models/user';
-import CryptoJS from 'crypto-js';
+import crypto from 'crypto';
 import dbConnect from "@/utils/database";
 
 const rateLimitMap = new Map<string, { lastRequest: number; requestCount: number }>();
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const tempCode = CryptoJS.lib.WordArray.random(3).toString(CryptoJS.enc.Hex).toUpperCase();
+        const tempCode = crypto.randomBytes(3).toString('hex').toUpperCase();
 
         user.tempPasswordResetCode = tempCode;
         user.tempCodeExpiry = Date.now() + 15 * 60 * 1000;
