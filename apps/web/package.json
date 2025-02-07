@@ -120,11 +120,7 @@
   "browser": {
     "crypto": false,
     "stream": false,
-    "util": false,
-    "assert": false,
-    "http": false,
-    "https": false,
-    "os": false,
-    "url": false
+    "net": false,
+    "tls": false
   }
 }

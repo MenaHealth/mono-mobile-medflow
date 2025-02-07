@@ -1,12 +1,4 @@
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
-import crypto from "crypto-browserify";
-import stream from "stream-browserify";
-import util from "util/";
-import assert from "assert/";
-import http from "stream-http";
-import https from "https-browserify";
-import os from "os-browserify/browser";
-import url from "url/";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -141,19 +133,14 @@ const nextConfig = {
             },
         ];
     },
-    webpack: async (config, { isServer }) => {
-        config.plugins.push(new NodePolyfillPlugin());
+    webpack: (config, { isServer }) => {
+        config.plugins.push(new NodePolyfillPlugin()); // ✅ Use node polyfills
 
         if (!isServer) {
             config.resolve.fallback = {
-                crypto,
-                stream,
-                util,
-                assert,
-                http,
-                https,
-                os,
-                url,
+                ...config.resolve.fallback,
+                crypto: require.resolve("crypto-browserify"),
+                stream: require.resolve("stream-browserify"),
             };
         }
 
