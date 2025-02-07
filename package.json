@@ -26,6 +26,7 @@
   "packageManager": "pnpm@8.15.4",
   "dependencies": {
     "@types/next-auth": "3.5.1",
+    "crypto-browserify": "^3.12.1",
     "next": "^14.2.17",
     "next-auth": "4.24.11",
     "patch-package": "^8.0.0",

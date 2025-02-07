@@ -135,11 +135,19 @@ const nextConfig = {
             topLevelAwait: true,
         };
 
-        // crypto fallback for the browser
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
-            crypto: "crypto-browserify",
-        };
+        // Ensure crypto works in both browser & server builds
+        if (!isServer) {
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                crypto: require.resolve("crypto-browserify"),
+            };
+        } else {
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                crypto: false, // Disable Webpack polyfill for server builds
+            };
+        }
+
 
         config.module.rules.push({
             test: /\.ttf$/,
