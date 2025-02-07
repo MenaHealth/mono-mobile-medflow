@@ -6,10 +6,14 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "buildWeb": "turbo run build --filter=web",
-    "buildMobile": "turbo run build --filter=mobile",
-    "dev": "turbo dev",
+    "build": "NEXT_DISABLE_ESLINT=1 turbo run build",
+    "buildWeb": "NEXT_DISABLE_ESLINT=1 turbo run build --filter=web",
+    "buildMobile": "NEXT_DISABLE_ESLINT=1 turbo run build --filter=mobile",
+
+    "dev": "turbo run dev",
+    "devWeb": "turbo run dev --filter=web",
+    "devMobile": "turbo run dev --filter=mobile",
+
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

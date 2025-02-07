@@ -1,4 +1,13 @@
 import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
+import crypto from "crypto-browserify";
+import stream from "stream-browserify";
+import util from "util";
+import assert from "assert";
+import http from "stream-http";
+import https from "https-browserify";
+import os from "os-browserify";
+import url from "url";
+
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -134,13 +143,17 @@ const nextConfig = {
         ];
     },
     webpack: (config, { isServer }) => {
-        config.plugins.push(new NodePolyfillPlugin()); // ✅ Use node polyfills
-
         if (!isServer) {
+            config.plugins.push(new NodePolyfillPlugin());
             config.resolve.fallback = {
-                ...config.resolve.fallback,
-                crypto: require.resolve("crypto-browserify"),
-                stream: require.resolve("stream-browserify"),
+                crypto: "crypto-browserify",
+                stream: "stream-browserify",
+                util: "util/",
+                assert: "assert/",
+                http: "stream-http",
+                https: "https-browserify",
+                os: "os-browserify/browser",
+                url: "url/",
             };
         }
 

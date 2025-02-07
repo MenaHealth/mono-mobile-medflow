@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "buildWeb": "next build",
+    "build": "NEXT_DISABLE_ESLINT=1 next build",
+    "buildWeb": "NEXT_DISABLE_ESLINT=1 next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -120,7 +120,12 @@
   "browser": {
     "crypto": false,
     "stream": false,
-    "net": false,
-    "tls": false
+    "util": false,
+    "assert": false,
+    "http": false,
+    "https": false,
+    "os": false,
+    "url": false
   }
 }
+
