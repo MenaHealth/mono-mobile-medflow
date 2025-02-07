@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/user";
-import { initializeDatabase, verifyAdminToken } from "@/utils/adminAPI";
+import { initializeDatabase, verifyAdminToken } from "@/app/api/utils/adminAPI";
 
 export async function GET(request: NextRequest) {
     try {

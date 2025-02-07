@@ -13,8 +13,10 @@ const nextConfig = {
             'medflow-telegram.fra1.digitaloceanspaces.com',
             'fra1.digitaloceanspaces.com',
             'medflow-telegram.fra1.cdn.digitaloceanspaces.com',
-            'medflow.cloud', // Add your custom domain here
-            'www.medflow.cloud', // Include the "www" version too
+            'medflow.cloud',
+            'www.medflow.cloud',
+            'stage.medflow.cloud',
+            'www.stage.medflow.cloud',
         ],
         remotePatterns: [
             {
