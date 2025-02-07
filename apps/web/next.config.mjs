@@ -1,4 +1,6 @@
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import crypto from 'crypto-browserify';
+import stream from 'stream-browserify';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -45,25 +47,25 @@ const nextConfig = {
             },
             {
                 protocol: 'https',
-                hostname: 'medflow.cloud', // Add your custom domain
+                hostname: 'medflow.cloud',
                 port: '',
                 pathname: '/**',
             },
             {
                 protocol: 'https',
-                hostname: 'www.medflow.cloud', // Add the "www" version
+                hostname: 'www.medflow.cloud',
                 port: '',
                 pathname: '/**',
             },
             {
                 protocol: 'https',
-                hostname: 'stage.medflow.cloud', // Add your custom domain
+                hostname: 'stage.medflow.cloud',
                 port: '',
                 pathname: '/**',
             },
             {
                 protocol: 'https',
-                hostname: 'www.stage.medflow.cloud', // Add the "www" version
+                hostname: 'www.stage.medflow.cloud',
                 port: '',
                 pathname: '/**',
             },
@@ -133,12 +135,19 @@ const nextConfig = {
             },
         ];
     },
-
     webpack: (config, { isServer }) => {
         if (!isServer) {
+            config.plugins.push(new NodePolyfillPlugin());
             config.resolve.fallback = {
                 ...config.resolve.fallback,
-                crypto: false, // This tells webpack to use the crypto-browserify polyfill
+                crypto: crypto,
+                stream: stream,
+                util: require.resolve('util/'),
+                assert: require.resolve('assert/'),
+                http: require.resolve('stream-http'),
+                https: require.resolve('https-browserify'),
+                os: require.resolve('os-browserify/browser'),
+                url: require.resolve('url/'),
             };
         }
         config.experiments = {
@@ -166,3 +175,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
