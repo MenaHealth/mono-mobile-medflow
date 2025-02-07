@@ -1,3 +1,5 @@
+import crypto from 'crypto-browserify';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
@@ -129,35 +131,28 @@ const nextConfig = {
             },
         ];
     },
-    webpack(config) {
+
+    webpack: (config, { isServer }) => {
+        if (!isServer) {
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                crypto: false, // This tells webpack to use the crypto-browserify polyfill
+            };
+        }
         config.experiments = {
             ...config.experiments,
             topLevelAwait: true,
         };
 
-        // Ensure crypto works in both browser & server builds
-        if (!isServer) {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                crypto: require.resolve("crypto-browserify"),
-            };
-        } else {
-            config.resolve.fallback = {
-                ...config.resolve.fallback,
-                crypto: false, // Disable Webpack polyfill for server builds
-            };
-        }
-
-
         config.module.rules.push({
             test: /\.ttf$/,
             use: [
                 {
-                    loader: 'file-loader',
+                    loader: "file-loader",
                     options: {
-                        publicPath: '/_next/static/chunks',
-                        outputPath: 'static/fonts',
-                        name: '[name].[hash].[ext]',
+                        publicPath: "/_next/static/chunks",
+                        outputPath: "static/fonts",
+                        name: "[name].[hash].[ext]",
                         emitFile: false,
                     },
                 },
