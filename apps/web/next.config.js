@@ -1,21 +1,19 @@
-import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
-import crypto from "crypto-browserify";
-import stream from "stream-browserify";
-import util from "util";
-import assert from "assert";
-import http from "stream-http";
-import https from "https-browserify";
-import os from "os-browserify";
-import url from "url";
-
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const crypto = require("crypto-browserify");
+const stream = require("stream-browserify");
+const util = require("util");
+const assert = require("assert");
+const http = require("stream-http");
+const https = require("https-browserify");
+const os = require("os-browserify");
+const url = require("url");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
     output: "standalone",
     images: {
-        unoptimized: true,  // Bypass Next.js image optimization
+        unoptimized: true,
         domains: [
             'lh3.googleusercontent.com',
             'localhost',
@@ -144,16 +142,15 @@ const nextConfig = {
     },
     webpack: (config, { isServer }) => {
         if (!isServer) {
-            config.plugins.push(new NodePolyfillPlugin());
             config.resolve.fallback = {
-                crypto: "crypto-browserify",
-                stream: "stream-browserify",
-                util: "util/",
-                assert: "assert/",
-                http: "stream-http",
-                https: "https-browserify",
-                os: "os-browserify/browser",
-                url: "url/",
+                crypto: require.resolve('crypto-browserify'),
+                stream: require.resolve('stream-browserify'),
+                util: require.resolve('util/'),
+                assert: require.resolve('assert/'),
+                http: require.resolve('stream-http'),
+                https: require.resolve('https-browserify'),
+                os: require.resolve('os-browserify/browser'),
+                url: require.resolve('url/'),
             };
         }
 
@@ -181,5 +178,4 @@ const nextConfig = {
     },
 };
 
-export default nextConfig;
-
+module.exports = nextConfig;

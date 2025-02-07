@@ -1,5 +1,7 @@
 # apps/web/Dockerfile
 
+# apps/web/Dockerfile
+
 # Stage 1: Setup base
 FROM node:18-alpine AS base
 RUN apk add --no-cache libc6-compat && apk update
@@ -9,8 +11,12 @@ WORKDIR /app
 FROM base AS builder
 RUN npm install -g pnpm@8.15.4 turbo@2.4.0
 
-# Copy all files
-COPY . .
+# Copy package.json and lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+
+# Copy the web app and any shared packages
+COPY apps/web ./apps/web
+COPY packages ./packages
 
 # Prune the workspace for the web app
 RUN turbo prune --scope=web --docker
@@ -75,11 +81,15 @@ RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 USER nextjs
 
 # Copy necessary files
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
-COPY --from=builder /app/apps/web ./apps/web
-COPY --from=builder /app/node_modules ./node_modules
+#COPY --from=builder /app/package.json ./package.json
+#COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+#COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+#COPY --from=builder /app/apps/web ./apps/web
+#COPY --from=builder /app/node_modules ./node_modules
+
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 # Set environment variables for runtime
 ENV NODE_ENV=production
@@ -107,4 +117,5 @@ ENV NEXTAUTH_URL_INTERNAL=${NEXTAUTH_URL_INTERNAL}
 
 EXPOSE 3001
 
-CMD ["node", "apps/web/.next/standalone/server.js"]
+CMD ["node", "server.js"]
+#CMD ["node", "apps/web/.next/standalone/server.js"]
