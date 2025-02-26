@@ -47,7 +47,7 @@ export const newPatientTranslations: Translations = {
         getStarted: "Ready to Get Started?",
         buttonText: "Chat with Our Team on Telegram",
         helpText: "Need Help?",
-        contactInfo: "If you have any issues or need further assistance, send us an email at Contactus@menahealth.org or send us a message on Instagram @themenahealth.",
+        contactInfo: "If you have any issues or need further assistance, send us an email at Contactus@menahealth.org.",
         telegramLink: "https://t.me/menahealth_bot",
     },
     arabic: {
